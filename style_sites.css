@@ -1,90 +1,99 @@
-/* General Reset */
-body, h1, p, a, img, header, footer {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
+/* General Styles */
 body {
-  font-family: 'Arial', sans-serif;
-  background: linear-gradient(to bottom, #e6f7ff, #ffffff);
-  color: #333;
-  line-height: 1.6;
-  padding: 0;
-  margin: 0;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9fb;
+    color: #333;
+    line-height: 1.6;
+    text-align: center;
+    padding-bottom: 100px; /* Adăugăm spațiu pentru a evita suprapunerea footer-ului */
 }
 
+/* Header */
 header {
-  background: #004080;
-  padding: 1rem;
-  text-align: center;
+    background-color: #4CAF50;
+    padding: 10px 0;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-header .link-header {
-  color: #ffffff;
-  text-decoration: none;
-  font-size: 1.8rem;
-  font-weight: bold;
+.link-header {
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
 }
 
-header .link-header:hover {
-  color: #00ccff;
-}
-
+/* Main Section */
 main {
-  text-align: center;
-  padding: 2rem;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-main h1 {
-  font-size: 2.5rem;
-  color: #004080;
-  margin-bottom: 1rem;
+h1 {
+    font-size: 2.5em;
+    color: #4CAF50;
+    margin-bottom: 20px;
 }
 
-main .text-big {
-  font-size: 1.4rem;
-  color: #0066cc;
-  margin-bottom: 1rem;
+h2 {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: left;
 }
 
-main p {
-  margin: 1rem 0;
+/* Ordered List */
+ol {
+    text-align: left;
+    padding-left: 20px;
+    margin-bottom: 20px;
 }
 
-main .link-text {
-  text-decoration: none;
-  color: #004080;
-  font-size: 1.2rem;
-  font-weight: bold;
+ol li {
+    background-color: #E8F5E9;
+    margin: 10px 0;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 16px;
 }
 
-main .link-text:hover {
-  color: #00ccff;
-  text-decoration: underline;
+/* Paragraph Links */
+p {
+    margin: 10px 0;
+    text-align: left;
+    font-size: 16px;
 }
 
+.link-text {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.link-text:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
 footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #004080;
-  padding: 1rem;
+    background-color: #333;
+    color: white;
+    padding: 10px 0; /* Mărim puțin padding-ul pentru un aspect mai aerisit */
+    text-align: center;
+    font-size: 14px;
+    position: fixed; /* Poziționare fixă pentru footer */
+    bottom: 0; /* Fixăm footer-ul la baza paginii */
+    width: 100%;
+    z-index: 100; /* Asigură-te că footer-ul este deasupra altor elemente */
 }
 
-footer .social {
-  margin: 0 1rem;
-}
-
-footer .social img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 2px solid #ffffff;
-  transition: transform 0.3s, border-color 0.3s;
-}
-
-footer .social img:hover {
-  transform: scale(1.1);
-  border-color: #00ccff;
+.social img {
+    margin: 0 5px;
+    width: 50px;
+    height: 50px;
 }
