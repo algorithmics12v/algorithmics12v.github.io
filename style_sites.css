@@ -1,0 +1,90 @@
+/* General Reset */
+body, h1, p, a, img, header, footer {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(to bottom, #e6f7ff, #ffffff);
+  color: #333;
+  line-height: 1.6;
+  padding: 0;
+  margin: 0;
+}
+
+header {
+  background: #004080;
+  padding: 1rem;
+  text-align: center;
+}
+
+header .link-header {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+header .link-header:hover {
+  color: #00ccff;
+}
+
+main {
+  text-align: center;
+  padding: 2rem;
+}
+
+main h1 {
+  font-size: 2.5rem;
+  color: #004080;
+  margin-bottom: 1rem;
+}
+
+main .text-big {
+  font-size: 1.4rem;
+  color: #0066cc;
+  margin-bottom: 1rem;
+}
+
+main p {
+  margin: 1rem 0;
+}
+
+main .link-text {
+  text-decoration: none;
+  color: #004080;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+main .link-text:hover {
+  color: #00ccff;
+  text-decoration: underline;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #004080;
+  padding: 1rem;
+}
+
+footer .social {
+  margin: 0 1rem;
+}
+
+footer .social img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  transition: transform 0.3s, border-color 0.3s;
+}
+
+footer .social img:hover {
+  transform: scale(1.1);
+  border-color: #00ccff;
+}
