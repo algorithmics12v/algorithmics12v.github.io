@@ -88,20 +88,21 @@ img:hover {
 footer {
     background-color: #333;
     color: white;
-    padding: 5px 0; /* Diminuează înălțimea footer-ului */
+    padding: 10px 0; /* Mărim puțin padding-ul pentru un aspect mai aerisit */
     text-align: center;
-    position: fixed;
-    bottom: 0;
+    font-size: 14px;
+    position: fixed; /* Poziționare fixă pentru footer */
+    bottom: 0; /* Fixăm footer-ul la baza paginii */
     width: 100%;
-    font-size: 14px; /* Diminuează dimensiunea fontului */
+    z-index: 100; /* Asigură-te că footer-ul este deasupra altor elemente */
 }
 
 .social img {
-    margin: 0 5px; /* Reduce spațiul dintre iconițe */
-    width: 50px; /* Iconițele sunt mai mici */
+    margin: 0 5px;
+    width: 50px;
     height: 50px;
-    transition: transform 0.3s ease, opacity 0.3s ease;
 }
+
 
 .social img:hover {
     transform: scale(1.2);
