@@ -5,6 +5,7 @@ const levels = [
     name: "🐰 Iepurașul Vesel – Nivelul 1",
     emoji: "🐰",
     image: "bunny.png",
+    background: "fundal1.png",
     rows: 4,
     cols: 5,
     start: { r: 3, c: 0 },
@@ -19,6 +20,7 @@ const levels = [
     name: "🐻 Ursulețul Curajos – Nivelul 2",
     emoji: "🐻",
     image: "bear.png",
+    background: "fundal2.png",
     rows: 5,
     cols: 6,
     start: { r: 4, c: 0 },
@@ -33,6 +35,7 @@ const levels = [
     name: "🐵 Maimuțica Poznașă – Nivelul 3",
     emoji: "🐵",
     image: "monkey.png",
+    background: "fundal3.png",
     rows: 5,
     cols: 6,
     start: { r: 4, c: 0 },
@@ -52,6 +55,7 @@ const levels = [
     name: "🐘 Elefănțelul Pompier – Nivelul 4",
     emoji: "🐘",
     image: "elephant.png",
+    background: "fundal3.png",
     rows: 5,
     cols: 6,
     start: { r: 4, c: 0 },
@@ -70,6 +74,7 @@ const levels = [
     name: "🦊 Vulpița Sprintenă – Nivelul 5",
     emoji: "🦊",
     image: "fox.png",
+    background: "fundal1.png", // cum ai pus tu, poți schimba
     rows: 6,
     cols: 7,
     start: { r: 5, c: 0 },
@@ -89,6 +94,7 @@ const levels = [
     name: "🦁 Leul Curajos – Nivelul 6",
     emoji: "🦁",
     image: "lion.png",
+    background: "fundal3.png",
     rows: 6,
     cols: 7,
     start: { r: 5, c: 1 },
@@ -112,6 +118,7 @@ const levels = [
     name: "🐼 Panda Somnoros – Nivelul 7",
     emoji: "🐼",
     image: "panda.png",
+    background: "fundal3.png",
     rows: 6,
     cols: 8,
     start: { r: 5, c: 0 },
@@ -131,6 +138,7 @@ const levels = [
     name: "🐧 Pinguinul Alunecos – Nivelul 8",
     emoji: "🐧",
     image: "penguin.png",
+    background: "fundal1.png",
     rows: 7,
     cols: 8,
     start: { r: 6, c: 1 },
@@ -153,6 +161,7 @@ const levels = [
     name: "🦒 Girafa Înaltă – Nivelul 9",
     emoji: "🦒",
     image: "giraffe.png",
+    background: "fundal3.png",
     rows: 7,
     cols: 8,
     start: { r: 6, c: 0 },
@@ -173,6 +182,7 @@ const levels = [
     name: "🐯 Tigrul Sprinten – Nivelul 10",
     emoji: "🐯",
     image: "tiger.png",
+    background: "fundal2.png",
     rows: 7,
     cols: 9,
     start: { r: 6, c: 0 },
@@ -197,6 +207,7 @@ const levels = [
     name: "🦓 Zebra Zglobie – Nivelul 11",
     emoji: "🦓",
     image: "zebra.png",
+    background: "fundal3.png",
     rows: 8,
     cols: 9,
     start: { r: 7, c: 1 },
@@ -218,6 +229,7 @@ const levels = [
     name: "🦛 Hipopotamul Vesel – Nivelul 12",
     emoji: "🦛",
     image: "hippo.png",
+    background: "fundal2.png",
     rows: 8,
     cols: 9,
     start: { r: 7, c: 0 },
@@ -245,7 +257,7 @@ const levels = [
 // ---------------- VARIABILE GLOBALE ----------------
 
 let currentLevel = 0;
-let highestUnlockedLevel = 0; // 🔹 <= DOAR până unde avem voie să mergem
+let highestUnlockedLevel = 0;
 
 let ROWS, COLS, goalPos, characterPos, obstacles = [], fires = [], waterPos = null;
 let fireExtinguished = false;
@@ -260,7 +272,6 @@ const playAgain = document.getElementById("playAgainBtn");
 const waterBtn = document.getElementById("waterBtn");
 const levelsList = document.getElementById("levelsList");
 
-// imaginea personajului
 const characterEl = document.createElement("img");
 characterEl.id = "character";
 characterEl.className = "character";
@@ -287,7 +298,6 @@ function buildLevelButtons() {
 
     btn.addEventListener("click", () => {
       const target = Number(btn.dataset.level);
-      // 🔒 dacă nivelul este blocat, nu facem nimic, doar animăm un shake
       if (target > highestUnlockedLevel) {
         bumpBoard();
         return;
@@ -307,12 +317,8 @@ function updateLevelButtons() {
   buttons.forEach(btn => {
     const idx = Number(btn.dataset.level);
     btn.classList.remove("active", "locked");
-    if (idx === currentLevel) {
-      btn.classList.add("active");
-    }
-    if (idx > highestUnlockedLevel) {
-      btn.classList.add("locked");
-    }
+    if (idx === currentLevel) btn.classList.add("active");
+    if (idx > highestUnlockedLevel) btn.classList.add("locked");
   });
 }
 
@@ -359,6 +365,13 @@ function loadLevel(index) {
   const lvl = levels[index];
   currentLevel = index;
 
+  // fundal specific nivelului
+  if (lvl.background) {
+    document.body.style.backgroundImage = `url('${lvl.background}')`;
+  } else {
+    document.body.style.backgroundImage = "none";
+  }
+
   ROWS = lvl.rows;
   COLS = lvl.cols;
   goalPos = { ...lvl.goal };
@@ -393,11 +406,8 @@ function loadLevel(index) {
       } else if (isWater) {
         cell.classList.add("water");
       } else if (r === goalPos.r && c === goalPos.c) {
-        if (lvl.goalType === "banana") {
-          cell.classList.add("banana");
-        } else {
-          cell.classList.add("flag");
-        }
+        if (lvl.goalType === "banana") cell.classList.add("banana");
+        else cell.classList.add("flag");
       }
 
       grid.appendChild(cell);
@@ -432,10 +442,12 @@ function showWin() {
     winText.textContent = "Ai terminat nivelul!";
   }
 
-  // 🔓 deblocăm următorul nivel, dacă există
+  // deblocăm următorul nivel
   if (currentLevel < levels.length - 1) {
     if (highestUnlockedLevel < currentLevel + 1) {
-      highestUnlockedLevel = currentLevel + 1;
+      //highestUnlockedLevel = currentLevel + 1;
+       highestUnlockedLevel = levels.length - 1;
+
       updateLevelButtons();
     }
   }
@@ -506,13 +518,11 @@ function tryMove(dir) {
   characterPos.c = nc;
   updateCharacter();
 
-  // ✨ verificăm condiția de câștig
   if (nr === goalPos.r && nc === goalPos.c) {
     const lvl = levels[currentLevel];
 
-    // ❗ Dacă nivelul are foc și folosește apă, NU câștigăm fără apă
+    // nivel cu foc + apă → nu câștigi dacă nu ai folosit apa
     if (lvl.usesWater && lvl.fires && lvl.fires.length > 0 && !fireExtinguished) {
-      // doar „tremură” ca feedback
       bumpBoard();
       return;
     }
@@ -541,9 +551,7 @@ function useWater() {
   fires.forEach(f => {
     const idx = f.r * COLS + f.c;
     const cell = grid.children[idx];
-    if (cell) {
-      cell.classList.remove("fire");
-    }
+    if (cell) cell.classList.remove("fire");
   });
 }
 
