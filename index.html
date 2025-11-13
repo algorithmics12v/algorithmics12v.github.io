@@ -1,28 +1,357 @@
-<html>
-  <head>
-    <title>My portfolio</title>
-    <link rel="stylesheet" href="style.css"/>
-  </head>
-  <body>
-    <header>
-      <a class="link-header" href="about.html">Leonov Lev</a>
-    </header>
-    <main>
-      <nav>
-        <a class="link-nav" href="mysites.html"><b>my best works</b></a>
-        <a class="link-nav" href="info.html"><b>useful information</b></a>
-      </nav>
-      <h1>Web-sites<br/> developer</h1>
-      <p>markup and styling</p>
-      <p>formatting of grid layouts</p>
-      <p>2D animations and interactive elements</p>
-      <p>multimedia on the website</p>
-      <img src="/uploads/2021/04/carousel-1684591_0_1618254197.svg" width="830px" height="550px"/>
-    </main>
-    <footer>
-      <a class="social" href=""><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.vecteezy.com%2Fsystem%2Fresources%2Fpreviews%2F005%2F113%2F232%2Foriginal%2Fwhatsapp-icon-3d-social-media-icon-illustration-free-vector.jpg&f=1&nofb=1&ipt=ef24173ffb5c4f38ce12014f4469a0e319da850150c115223ec5eee07eebc152&ipo=images" width="100px" height="100px"/></a>
-      <a class="social" href=""><img src="https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Ffreevector.co%2Fwp-content%2Fuploads%2F2012%2F05%2Ffacebook-icon-white.png&f=1&nofb=1&ipt=bc8fcf06b39bd03f4c572d12d5bce45e9b68587405ca2239f3179a658c0d9f05&ipo=images" width="100px" height="100px"/></a>
-      <a class="social" href=""><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.dribbble.com%2Fusers%2F411475%2Fscreenshots%2F13265096%2Finstagram_final_4x.png&f=1&nofb=1&ipt=a1b050895b4732a3d4b3de8659a86c8b03d1a792f2ffa941a3ea7091eeadf9cb&ipo=images" height="100px"/></a>
-    </footer>
-  </body>
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>Iepurașul Vesel – Labirint</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden; /* fără scroll */
+    }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: url("fundal1.png") no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* TOT JOCUL – centrat, cu un mic offset în jos */
+    .game {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 8px;
+      transform: translateY(3vh); /* coboară tot conținutul un pic */
+    }
+
+    .board-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .board-title {
+      font-weight: bold;
+      font-size: 1.4rem;
+      color: white;
+      text-shadow: 0 0 8px black;
+      margin-bottom: 8px;
+    }
+
+    /* GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 76px);
+      grid-template-rows: repeat(4, 76px);
+      gap: 8px;
+      justify-content: center;
+      align-content: center;
+    }
+
+    .cell {
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 2px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cell.flag {
+      background: rgba(255, 200, 200, 0.85);
+    }
+
+    .cell.flag::after {
+      content: "🚩";
+      font-size: 1.8rem;
+    }
+
+    /* IEPURAȘ – clar și centrat în pătrat */
+    .bunny {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #ff8fa3;
+      font-size: 2.1rem;
+      place-self: center;              /* 👉 centrează iepurașul în celula lui */
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+    }
+
+    /* BUTOANE SUB GRID, PE O SINGURĂ LINIE */
+    .controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+      color: white;
+      text-shadow: 0 0 8px black;
+    }
+
+    .controls h2 {
+      font-size: 1.2rem;
+    }
+
+    .controls p {
+      font-size: 0.9rem;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+      flex-wrap: nowrap; /* toate în linie */
+    }
+
+    .btn-arrow {
+      width: 64px;
+      height: 40px;
+      border: none;
+      border-radius: 999px;
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.15s, background 0.15s;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+      color: #f9fafb;
+    }
+
+    /* culori diferite pe săgeți */
+    .btn-arrow[data-dir="up"] {
+      background: linear-gradient(135deg, #38bdf8, #1d4ed8);
+    }
+    .btn-arrow[data-dir="down"] {
+      background: linear-gradient(135deg, #4ade80, #16a34a);
+    }
+    .btn-arrow[data-dir="left"] {
+      background: linear-gradient(135deg, #fb923c, #c2410c);
+    }
+    .btn-arrow[data-dir="right"] {
+      background: linear-gradient(135deg, #a855f7, #6d28d9);
+    }
+
+    .btn-arrow:active {
+      transform: scale(0.9);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    /* OVERLAY CÂȘTIG */
+    .win-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.2s;
+    }
+
+    .win-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .win-box {
+      background: white;
+      padding: 16px 22px;
+      border-radius: 18px;
+      text-align: center;
+      box-shadow: 0 0 20px black;
+    }
+
+    .win-box h3 {
+      font-size: 1.4rem;
+      margin-bottom: 6px;
+    }
+
+    .win-box button {
+      margin-top: 8px;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: #4ade80;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+
+    .shake { animation: shake .25s linear 2; }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      50% { transform: translateX(4px); }
+      75% { transform: translateX(-3px); }
+      100% { transform: translateX(0); }
+    }
+
+    /* 📏 ADAPTARE PENTRU ECRANE MAI JOASE */
+
+    @media (max-height: 750px) {
+      .grid {
+        grid-template-columns: repeat(5, 68px);
+        grid-template-rows: repeat(4, 68px);
+        gap: 6px;
+      }
+      .bunny {
+        width: 54px;
+        height: 54px;
+        font-size: 1.9rem;
+      }
+      .btn-arrow {
+        width: 60px;
+        height: 36px;
+        font-size: 1.25rem;
+      }
+    }
+
+    @media (max-height: 650px) {
+      .game { transform: translateY(0); } /* pe ecrane mici, îl recentrăm */
+      .grid {
+        grid-template-columns: repeat(5, 60px);
+        grid-template-rows: repeat(4, 60px);
+        gap: 4px;
+      }
+      .bunny {
+        width: 48px;
+        height: 48px;
+        font-size: 1.7rem;
+      }
+      .btn-arrow {
+        width: 52px;
+        height: 32px;
+        font-size: 1.1rem;
+      }
+      .controls h2 { font-size: 1.05rem; }
+      .controls p { font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game">
+    <div class="board-wrapper" id="boardWrapper">
+      <div class="board-title">🐰 Iepurașul Vesel</div>
+
+      <div class="win-overlay" id="winOverlay">
+        <div class="win-box">
+          <h3>Bravo! 🥳</h3>
+          <p>Iepurașul a ajuns la steag!</p>
+          <button id="playAgainBtn">Joacă din nou</button>
+        </div>
+      </div>
+
+      <div class="grid" id="grid">
+        <!-- 20 celule -->
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell flag"></div><div class="cell"></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+
+        <!-- IEPURAȘ -->
+        <div class="bunny" id="bunny">🐰</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <h2>Mișcă-l pe iepuraș</h2>
+      <p>Folosește săgețile sau tastele pentru a ajunge la steag.</p>
+
+      <!-- BUTOANE ÎNTR-O SINGURĂ LINIE -->
+      <div class="buttons">
+        <button class="btn-arrow" data-dir="left">←</button>
+        <button class="btn-arrow" data-dir="up">↑</button>
+        <button class="btn-arrow" data-dir="down">↓</button>
+        <button class="btn-arrow" data-dir="right">→</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ROWS = 4, COLS = 5;
+    const startPos = { r: 3, c: 0 };
+    const flagPos  = { r: 1, c: 3 };
+
+    let bunnyPos = { ...startPos };
+
+    const bunnyEl    = document.getElementById("bunny");
+    const boardWrap  = document.getElementById("boardWrapper");
+    const winOverlay = document.getElementById("winOverlay");
+    const playAgain  = document.getElementById("playAgainBtn");
+
+    // Fixăm celulele ca să nu se miște steagul
+    (function fixCells() {
+      document.querySelectorAll(".grid .cell").forEach((cell, i) => {
+        const r = Math.floor(i / COLS);
+        const c = i % COLS;
+        cell.style.gridRowStart = r + 1;
+        cell.style.gridColumnStart = c + 1;
+      });
+    })();
+
+    function updateBunny() {
+      bunnyEl.style.gridRowStart    = bunnyPos.r + 1;
+      bunnyEl.style.gridColumnStart = bunnyPos.c + 1;
+    }
+
+    function showWin() { winOverlay.classList.add("show"); }
+    function hideWin() { winOverlay.classList.remove("show"); }
+
+    function resetGame() {
+      bunnyPos = { ...startPos };
+      updateBunny();
+      hideWin();
+    }
+
+    function tryMove(dir) {
+      const D = { up:{dr:-1,dc:0}, down:{dr:1,dc:0}, left:{dr:0,dc:-1}, right:{dr:0,dc:1} }[dir];
+
+      const nr = bunnyPos.r + D.dr;
+      const nc = bunnyPos.c + D.dc;
+
+      if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS) {
+        boardWrap.classList.remove("shake");
+        void boardWrap.offsetWidth;
+        boardWrap.classList.add("shake");
+        return;
+      }
+
+      bunnyPos.r = nr;
+      bunnyPos.c = nc;
+      updateBunny();
+
+      if (nr === flagPos.r && nc === flagPos.c) showWin();
+    }
+
+    document.querySelectorAll(".btn-arrow[data-dir]").forEach(btn =>
+      btn.addEventListener("click", () => tryMove(btn.dataset.dir))
+    );
+
+    window.addEventListener("keydown", e => {
+      const map = {ArrowUp:"up", ArrowDown:"down", ArrowLeft:"left", ArrowRight:"right"};
+      if (map[e.key]) { e.preventDefault(); tryMove(map[e.key]); }
+    });
+
+    playAgain.addEventListener("click", resetGame);
+
+    updateBunny();
+  </script>
+</body>
 </html>
