@@ -1,110 +1,511 @@
-/* General Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
 body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
-    line-height: 1.6;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* fără scroll */
 }
 
-/* Header */
-header {
-    background: linear-gradient(90deg, #4CAF50, #81C784);
-    padding: 15px 0;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: url("fundal1.png") no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.link-header {
-    color: white;
-    text-decoration: none;
-    font-size: 24px;
-    font-weight: bold;
-    transition: color 0.3s ease;
+/* LAYOUT GENERAL: joc + meniu lateral */
+.game {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
 }
 
-.link-header:hover {
-    color: #FFEB3B;
+.game-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
-/* Main Section */
-main {
-    max-width: 900px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
+.board-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-h1 {
-    font-size: 2.5em;
-    color: #4CAF50;
-    margin-bottom: 10px;
+.board-title {
+  font-weight: bold;
+  font-size: 1.6rem;
+  color: white;
+  text-shadow: 0 0 8px black;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
-p {
-    margin: 15px 0;
-    font-size: 18px;
-    color: #555;
+/* GRID – dimensiune controlată prin variabile CSS */
+.grid {
+  --cell-size: 80px;
+  --rows: 4;
+  --cols: 5;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--cell-size));
+  grid-template-rows: repeat(var(--rows), var(--cell-size));
+  gap: 8px;
+  justify-content: center;
+  align-content: center;
 }
 
-/* Navigation */
-nav {
-    margin-bottom: 20px;
+.cell {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 3px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
-.link-nav {
-    display: inline-block;
-    margin: 0 10px;
-    padding: 10px 20px;
-    color: #fff;
-    background-color: #4CAF50;
-    text-decoration: none;
-    font-size: 18px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+/* steag */
+.cell.flag {
+  background: rgba(255, 200, 200, 0.9);
 }
 
-.link-nav:hover {
-    background-color: #388E3C;
-    transform: scale(1.1);
+.cell.flag::after {
+  content: "🚩";
+  font-size: calc(var(--cell-size) * 0.45);
 }
 
-/* Image */
-img {
-    border-radius: 10px;
-    margin: 20px 0;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* banană pentru niveluri cu maimuță */
+.cell.banana {
+  background: rgba(255, 245, 200, 0.9);
 }
 
-img:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+.cell.banana::after {
+  content: "🍌";
+  font-size: calc(var(--cell-size) * 0.5);
 }
 
-/* Footer */
-footer {
-    background-color: #333;
-    color: white;
-    padding: 10px 0; /* Mărim puțin padding-ul pentru un aspect mai aerisit */
-    text-align: center;
-    font-size: 14px;
-    position: fixed; /* Poziționare fixă pentru footer */
-    bottom: 0; /* Fixăm footer-ul la baza paginii */
+/* obstacole – pietre */
+.cell.obstacle {
+  background: rgba(148, 163, 184, 0.9);
+}
+
+.cell.obstacle::after {
+  content: "🪨";
+  font-size: calc(var(--cell-size) * 0.4);
+}
+
+/* foc – blochează până e stins */
+.cell.fire {
+  background: rgba(248, 113, 113, 0.95);
+}
+
+.cell.fire::after {
+  content: "🔥";
+  font-size: calc(var(--cell-size) * 0.5);
+}
+
+/* apă – locul unde vine elefantul să ia apă */
+.cell.water {
+  background: rgba(56, 189, 248, 0.95);
+}
+
+.cell.water::after {
+  content: "💧";
+  font-size: calc(var(--cell-size) * 0.5);
+}
+
+/* PERSONAJ – imagine PNG pentru fiecare animal */
+.character {
+  width: calc(var(--cell-size) * 0.85);
+  height: calc(var(--cell-size) * 0.85);
+  border-radius: 50%;
+  background: #ffffff;
+  object-fit: contain;
+  border: 3px solid #ff8fa3;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
+  place-self: center;
+}
+
+/* CONTROALE */
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  color: white;
+  text-shadow: 0 0 8px black;
+  margin-top: 6px;
+}
+
+.controls h2 {
+  font-size: 1.3rem;
+}
+
+.controls p {
+  font-size: 0.9rem;
+}
+
+.btn-arrow {
+  width: 72px;
+  height: 46px;
+  border: none;
+  border-radius: 14px;
+  font-size: 1.6rem;
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(135deg, #4f46e5, #3b82f6);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.35), inset 0 0 10px rgba(255,255,255,0.3);
+  transition: 
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease,
+    background 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* efect iluminare */
+.btn-arrow::before {
+  content: "";
+  position: absolute;
+  top: -120%;
+  left: -120%;
+  width: 250%;
+  height: 250%;
+  background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 60%);
+  transform: scale(0);
+  transition: transform 0.4s ease;
+}
+
+/* când treci cu mouse-ul pe buton – glow animat */
+.btn-arrow:hover::before {
+  transform: scale(1);
+}
+
+/* hover – ridicare + glow */
+.btn-arrow:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.5),
+              0 0 10px rgba(255,255,255,0.5);
+}
+
+/* click – apăsare */
+.btn-arrow:active {
+  transform: scale(0.92);
+  filter: brightness(0.85);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+/* CULORI PERSONALIZATE PE DIRECȚII */
+
+/* sus */
+.btn-arrow[data-dir="up"] {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+/* jos */
+.btn-arrow[data-dir="down"] {
+  background: linear-gradient(135deg, #22c55e, #15803d);
+}
+
+/* stânga */
+.btn-arrow[data-dir="left"] {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+/* dreapta */
+.btn-arrow[data-dir="right"] {
+  background: linear-gradient(135deg, #ec4899, #db2777);
+}
+
+/* BUBBLE + ICON PNG ÎNĂUNTRUL BUTONULUI */
+.arrow-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background-color: #ffffff;
+  display: block;
+  margin: 0 auto;
+  position: relative;
+
+  /* iconița săgeată */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 70%;
+
+  box-shadow:
+    inset 0 0 4px rgba(148,163,184,0.7),
+    0 1px 2px rgba(0,0,0,0.35);
+
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* iconurile pentru fiecare direcție – PNG-uri transparente */
+.arrow-up {
+  background-image: url("arrow-up.png");
+}
+
+.arrow-down {
+  background-image: url("arrow-down.png");
+}
+
+.arrow-left {
+  background-image: url("arrow-left.png");
+}
+
+.arrow-right {
+  background-image: url("arrow-right.png");
+}
+
+/* puțină animație când treci cu mouse-ul */
+.btn-arrow:hover .arrow-icon {
+  transform: scale(1.12);
+  box-shadow:
+    inset 0 0 5px rgba(148,163,184,0.9),
+    0 2px 4px rgba(0,0,0,0.45);
+}
+
+/* când apeși butonul, bulina „se tasează” un pic */
+.btn-arrow:active .arrow-icon {
+  transform: scale(0.9);
+}
+
+
+/* buton apă – mic, rotund, doar pictogramă */
+.btn-water {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 2px solid rgba(125, 211, 252, 1);
+  background: rgba(15, 23, 42, 0.75);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35);
+  transition: transform 0.1s, box-shadow 0.15s, filter 0.15s,
+    border-color 0.15s, background 0.15s;
+  color: #e0f2fe;
+}
+
+.btn-arrow:active,
+.btn-water:active {
+  transform: scale(0.9);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  filter: brightness(0.95);
+}
+
+.btn-water.disabled {
+  opacity: 0.35;
+  cursor: default;
+  filter: grayscale(0.2);
+  box-shadow: none;
+}
+
+/* OVERLAY CÂȘTIG */
+.win-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s;
+}
+
+.win-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.win-box {
+  background: white;
+  padding: 16px 22px;
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 0 20px black;
+  max-width: 260px;
+}
+
+.win-box h3 {
+  font-size: 1.4rem;
+  margin-bottom: 6px;
+}
+
+.win-box p {
+  margin-bottom: 8px;
+}
+
+.win-box button {
+  margin-top: 4px;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: #4ade80;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+/* animație de „lovit” */
+.shake {
+  animation: shake 0.25s linear 2;
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+  75% {
+    transform: translateX(-3px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* MENIU LATERAL NIVELURI */
+.sidebar {
+  width: 140px;
+  padding: 12px 10px;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.8);
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  color: #e5e7eb;
+}
+
+.sidebar-title {
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 4px;
+  opacity: 0.9;
+}
+
+#levelsList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.level-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 6px 8px;
+  background: rgba(30, 64, 175, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #e5e7eb;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+}
+
+.level-btn span.icon {
+  font-size: 1.2rem;
+}
+
+.level-btn span.label {
+  font-size: 0.78rem;
+  opacity: 0.9;
+}
+
+.level-btn:hover {
+  background: rgba(59, 130, 246, 0.35);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.6);
+  transform: translateY(-1px);
+}
+
+.level-btn.active {
+  background: rgba(59, 130, 246, 0.7);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.8);
+}
+
+.level-btn.locked {
+  opacity: 0.4;
+  cursor: default;
+  box-shadow: none;
+}
+
+.level-btn.locked:hover {
+  background: rgba(30, 64, 175, 0.2);
+  box-shadow: none;
+  transform: none;
+}
+
+
+/* Responsivitate */
+@media (max-height: 700px) {
+  .game {
+    padding: 16px;
+  }
+
+  .controls h2 {
+    font-size: 1.15rem;
+  }
+
+  .controls p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .game {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar {
     width: 100%;
-    z-index: 100; /* Asigură-te că footer-ul este deasupra altor elemente */
-}
+    max-width: 420px;
+    flex-direction: row;
+    justify-content: space-around;
+  }
 
-.social img {
-    margin: 0 5px;
-    width: 25px;
-    height: 25px;
-}
+  .sidebar-title {
+    display: none;
+  }
 
+  #levelsList {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
-.social img:hover {
-    transform: scale(1.2);
-    opacity: 0.8;
+  .level-btn {
+    justify-content: center;
+  }
 }
