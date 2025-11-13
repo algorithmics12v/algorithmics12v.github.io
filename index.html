@@ -21,16 +21,26 @@
       justify-content: center;
     }
 
-    /* TOT JOCUL – cu margini moderate */
+    /* LAYOUT GENERAL: joc + meniu lateral */
     .game {
       width: 100%;
       height: 100vh;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 24px;
+    }
+
+    .game-main {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 14px;
-      padding: 40px 28px;
+      flex: 1 1 auto;
+      min-width: 0;
     }
 
     .board-wrapper {
@@ -72,16 +82,52 @@
       box-shadow: 0 0 10px rgba(255,255,255,0.5);
     }
 
+    /* steag */
     .cell.flag {
       background: rgba(255, 200, 200, 0.9);
     }
-
     .cell.flag::after {
       content: "🚩";
       font-size: calc(var(--cell-size) * 0.45);
     }
 
-    /* PERSONAJ – iepuraș / ursuleț, centrat în celulă */
+    /* banană pentru nivelul 3 */
+    .cell.banana {
+      background: rgba(255, 245, 200, 0.9);
+    }
+    .cell.banana::after {
+      content: "🍌";
+      font-size: calc(var(--cell-size) * 0.5);
+    }
+
+    /* obstacole – pietre */
+    .cell.obstacle {
+      background: rgba(148, 163, 184, 0.9);
+    }
+    .cell.obstacle::after {
+      content: "🪨";
+      font-size: calc(var(--cell-size) * 0.4);
+    }
+
+    /* foc – blochează până e stins */
+    .cell.fire {
+      background: rgba(248, 113, 113, 0.95);
+    }
+    .cell.fire::after {
+      content: "🔥";
+      font-size: calc(var(--cell-size) * 0.5);
+    }
+
+    /* apă – elefantul vine aici să ia apă */
+    .cell.water {
+      background: rgba(56, 189, 248, 0.95);
+    }
+    .cell.water::after {
+      content: "💧";
+      font-size: calc(var(--cell-size) * 0.5);
+    }
+
+    /* PERSONAJ – iepuraș / urs / maimuță / elefant */
     .bunny {
       width: calc(var(--cell-size) * 0.8);
       height: calc(var(--cell-size) * 0.8);
@@ -123,7 +169,7 @@
       align-items: center;
       gap: 10px;
       margin-top: 4px;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
     }
 
     .btn-arrow {
@@ -151,10 +197,34 @@
       background: linear-gradient(135deg, #a855f7, #6d28d9);
     }
 
-    .btn-arrow:active {
+    /* buton apă, restilizat – mic, rotund, doar pictogramă */
+    .btn-water {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 2px solid rgba(125, 211, 252, 1);
+      background: rgba(15, 23, 42, 0.75);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.35);
+      transition: transform 0.1s, box-shadow 0.15s, filter 0.15s, border-color 0.15s, background 0.15s;
+      color: #e0f2fe;
+    }
+
+    .btn-water:active {
       transform: scale(0.9);
       box-shadow: 0 1px 3px rgba(0,0,0,0.4);
       filter: brightness(0.95);
+    }
+
+    .btn-water.disabled {
+      opacity: 0.4;
+      cursor: default;
+      filter: grayscale(0.2);
+      box-shadow: none;
     }
 
     /* OVERLAY CÂȘTIG */
@@ -213,47 +283,145 @@
       100% { transform: translateX(0); }
     }
 
-    /* Pe ecrane foarte joase reducem padding-ul ca să încape tot */
+    /* MENIU LATERAL NIVELURI */
+    .sidebar {
+      width: 120px;
+      padding: 12px 10px;
+      border-radius: 18px;
+      background: rgba(15, 23, 42, 0.8);
+      box-shadow: 0 0 16px rgba(0,0,0,0.45);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      color: #e5e7eb;
+    }
+
+    .sidebar-title {
+      font-size: 0.9rem;
+      text-align: center;
+      margin-bottom: 4px;
+      opacity: 0.9;
+    }
+
+    .level-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 8px;
+      background: rgba(30, 64, 175, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: #e5e7eb;
+      transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+    }
+
+    .level-btn span.icon {
+      font-size: 1.2rem;
+    }
+
+    .level-btn span.label {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    .level-btn:hover {
+      background: rgba(59, 130, 246, 0.35);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .level-btn.active {
+      background: rgba(59, 130, 246, 0.7);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.8);
+    }
+
+    /* Pe ecrane foarte joase reducem padding-ul */
     @media (max-height: 700px) {
       .game {
-        padding: 20px 16px;
-        gap: 8px;
+        padding: 16px;
       }
       .controls h2 { font-size: 1.15rem; }
       .controls p  { font-size: 0.8rem; }
+    }
+
+    /* Pe ecrane înguste, punem meniul sub joc */
+    @media (max-width: 900px) {
+      .game {
+        flex-direction: column;
+        height: auto;
+      }
+      .sidebar {
+        width: 100%;
+        max-width: 360px;
+        flex-direction: row;
+        justify-content: space-around;
+      }
+      .sidebar-title {
+        display: none;
+      }
+      .level-btn {
+        justify-content: center;
+      }
     }
   </style>
 </head>
 <body>
 
   <div class="game">
-    <div class="board-wrapper" id="boardWrapper">
-      <div class="board-title" id="boardTitle">🐰 Iepurașul Vesel</div>
+    <div class="game-main">
+      <div class="board-wrapper" id="boardWrapper">
+        <div class="board-title" id="boardTitle">🐰 Iepurașul Vesel</div>
 
-      <div class="win-overlay" id="winOverlay">
-        <div class="win-box">
-          <h3 id="winTitle">Bravo! 🥳</h3>
-          <p id="winText">Ai terminat nivelul!</p>
-          <button id="playAgainBtn">Joacă din nou</button>
+        <div class="win-overlay" id="winOverlay">
+          <div class="win-box">
+            <h3 id="winTitle">Bravo! 🥳</h3>
+            <p id="winText">Ai terminat nivelul!</p>
+            <button id="playAgainBtn">Joacă din nou</button>
+          </div>
+        </div>
+
+        <div class="grid" id="grid">
+          <!-- celulele & personajul vor fi generate din JavaScript -->
         </div>
       </div>
 
-      <div class="grid" id="grid">
-        <!-- celulele & personajul vor fi generate din JavaScript -->
+      <div class="controls">
+        <h2>Mișcă personajul</h2>
+        <p>Folosește săgețile pentru mișcare, iar la nivelul cu elefantul 🐘 apasă 💧 ca să stingi focul.</p>
+
+        <div class="buttons">
+          <button class="btn-arrow" data-dir="left">←</button>
+          <button class="btn-arrow" data-dir="up">↑</button>
+          <button class="btn-arrow" data-dir="down">↓</button>
+          <button class="btn-arrow" data-dir="right">→</button>
+          <button class="btn-water disabled" id="waterBtn" title="Apă pentru elefant">💧</button>
+        </div>
       </div>
     </div>
 
-    <div class="controls">
-      <h2>Mișcă personajul</h2>
-      <p>Folosește săgețile sau tastele pentru a ajunge la steag.</p>
-
-      <div class="buttons">
-        <button class="btn-arrow" data-dir="left">←</button>
-        <button class="btn-arrow" data-dir="up">↑</button>
-        <button class="btn-arrow" data-dir="down">↓</button>
-        <button class="btn-arrow" data-dir="right">→</button>
-      </div>
-    </div>
+    <aside class="sidebar">
+      <div class="sidebar-title">Niveluri</div>
+      <button class="level-btn" data-level="0">
+        <span class="icon">🐰</span>
+        <span class="label">Nivel 1</span>
+      </button>
+      <button class="level-btn" data-level="1">
+        <span class="icon">🐻</span>
+        <span class="label">Nivel 2</span>
+      </button>
+      <button class="level-btn" data-level="2">
+        <span class="icon">🐵</span>
+        <span class="label">Nivel 3</span>
+      </button>
+      <button class="level-btn" data-level="3">
+        <span class="icon">🐘</span>
+        <span class="label">Nivel 4</span>
+      </button>
+    </aside>
   </div>
 
   <script>
@@ -264,21 +432,69 @@
         rows: 4,
         cols: 5,
         start: { r: 3, c: 0 },
-        flag:  { r: 1, c: 3 },
-        emoji: "🐰"
+        goal:  { r: 1, c: 3 },
+        emoji: "🐰",
+        goalType: "flag",
+        obstacles: [],
+        fires: [],
+        water: null,
+        usesWater: false
       },
       {
         name: "🐻 Ursulețul Curajos – Nivelul 2",
         rows: 5,
         cols: 6,
         start: { r: 4, c: 0 },
-        flag:  { r: 0, c: 5 },
-        emoji: "🐻"
+        goal:  { r: 0, c: 5 },
+        emoji: "🐻",
+        goalType: "flag",
+        obstacles: [],
+        fires: [],
+        water: null,
+        usesWater: false
+      },
+      {
+        name: "🐵 Maimuțica Poznașă – Nivelul 3",
+        rows: 5,
+        cols: 6,
+        start: { r: 4, c: 0 },
+        goal:  { r: 0, c: 5 },  // banana
+        emoji: "🐵",
+        goalType: "banana",
+        obstacles: [
+          { r: 1, c: 2 },
+          { r: 2, c: 2 },
+          { r: 2, c: 3 },
+          { r: 3, c: 3 }
+        ],
+        fires: [],
+        water: null,
+        usesWater: false
+      },
+      {
+        name: "🐘 Elefănțelul Pompier – Nivelul 4",
+        rows: 5,
+        cols: 6,
+        start: { r: 4, c: 0 },
+        goal:  { r: 0, c: 5 },  // steag
+        emoji: "🐘",
+        goalType: "flag",
+        obstacles: [
+          { r: 3, c: 1 }   // piatră
+        ],
+        fires: [
+          { r: 1, c: 3 },
+          { r: 2, c: 3 },
+          { r: 3, c: 3 }
+        ],
+        water: { r: 4, c: 2 },
+        usesWater: true
       }
     ];
 
     let currentLevel = 0;
-    let ROWS, COLS, flagPos, bunnyPos;
+    let ROWS, COLS, goalPos, bunnyPos, obstacles = [], fires = [], waterPos = null;
+    let fireExtinguished = false;
 
     const grid       = document.getElementById("grid");
     const boardWrap  = document.getElementById("boardWrapper");
@@ -287,13 +503,15 @@
     const winTitle   = document.getElementById("winTitle");
     const winText    = document.getElementById("winText");
     const playAgain  = document.getElementById("playAgainBtn");
+    const waterBtn   = document.getElementById("waterBtn");
+    const levelButtons = document.querySelectorAll(".level-btn");
 
-    // personajul (iepuraș / ursuleț)
+    // personajul (iepuraș / urs / maimuță / elefant)
     const bunnyEl = document.createElement("div");
     bunnyEl.id = "bunny";
     bunnyEl.className = "bunny";
 
-    // 🔧 Fixăm poziția fiecărei celule, ca să nu se mai „mute” vizual steagul
+    // 🔧 Fixăm poziția fiecărei celule
     function fixCells() {
       const cells = grid.querySelectorAll(".cell");
       cells.forEach((cell, i) => {
@@ -306,21 +524,42 @@
 
     // 🔍 Calculăm dimensiunea optimă a celulei ca să nu facă overflow
     function updateCellSize() {
-      // spațiu aproximativ ocupat de titlu + controale
-      const extraVertical = 170; // px (titlu + butoane + text)
-      const paddingY = window.innerHeight <= 700 ? 40 : 80; // estimează padding sus+j0s
+      const extraVertical = 180; // px (titlu + controale)
+      const paddingY = window.innerHeight <= 700 ? 40 : 80;
       const availableHeight = window.innerHeight - extraVertical - paddingY;
 
-      const extraHorizontal = 60; // px pentru margini laterale
+      const sidebar = document.querySelector(".sidebar");
+      const sidebarWidth = sidebar ? sidebar.offsetWidth : 130;
+      const extraHorizontal = 40 + sidebarWidth;
       const availableWidth = window.innerWidth - extraHorizontal;
 
       const maxSizeH = availableHeight / ROWS;
       const maxSizeW = availableWidth / COLS;
 
-      // limităm celula între 40 și 120 px
       const cellSize = Math.max(40, Math.min(maxSizeH, maxSizeW, 120));
 
       grid.style.setProperty("--cell-size", cellSize + "px");
+    }
+
+    function updateLevelButtons() {
+      levelButtons.forEach(btn => {
+        const idx = parseInt(btn.dataset.level, 10);
+        if (idx === currentLevel) {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
+      });
+    }
+
+    function updateWaterButtonState(levelConfig) {
+      if (levelConfig.usesWater) {
+        waterBtn.classList.remove("disabled");
+        waterBtn.disabled = false;
+      } else {
+        waterBtn.classList.add("disabled");
+        waterBtn.disabled = true;
+      }
     }
 
     function loadLevel(index) {
@@ -329,41 +568,57 @@
 
       ROWS = lvl.rows;
       COLS = lvl.cols;
-      flagPos = { ...lvl.flag };
+      goalPos = { ...lvl.goal };
       bunnyPos = { ...lvl.start };
+      obstacles = lvl.obstacles || [];
+      fires = lvl.fires || [];
+      waterPos = lvl.water || null;
+      fireExtinguished = false;
 
-      // titlu
       boardTitle.textContent = lvl.name;
 
-      // setăm numărul de rânduri/coloane în CSS
       grid.style.setProperty("--rows", ROWS);
       grid.style.setProperty("--cols", COLS);
 
-      // calculăm dimensiunea celulelor pentru acest nivel
       updateCellSize();
 
-      // curățăm grila
       grid.innerHTML = "";
 
-      // generăm celulele
       for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
           const cell = document.createElement("div");
           cell.className = "cell";
-          if (r === flagPos.r && c === flagPos.c) {
-            cell.classList.add("flag");
+
+          const isObstacle = obstacles.some(o => o.r === r && o.c === c);
+          const isFire = fires.some(f => f.r === r && f.c === c);
+          const isWater = waterPos && waterPos.r === r && waterPos.c === c;
+
+          if (isObstacle) {
+            cell.classList.add("obstacle");
+          } else if (isFire) {
+            cell.classList.add("fire");
+          } else if (isWater) {
+            cell.classList.add("water");
+          } else if (r === goalPos.r && c === goalPos.c) {
+            if (lvl.goalType === "banana") {
+              cell.classList.add("banana");
+            } else {
+              cell.classList.add("flag");
+            }
           }
+
           grid.appendChild(cell);
         }
       }
 
-      // 🧱 blocăm pozițiile celulelor (inclusiv steagul)
       fixCells();
 
-      // actualizăm personajul (emoji) și îl punem în grid
       bunnyEl.textContent = lvl.emoji;
       grid.appendChild(bunnyEl);
       updateBunny();
+
+      updateLevelButtons();
+      updateWaterButtonState(lvl);
 
       hideWin();
     }
@@ -377,7 +632,6 @@
       winOverlay.classList.add("show");
 
       if (currentLevel < levels.length - 1) {
-        // nu e ultimul nivel -> pregătim "Nivelul următor"
         winTitle.textContent = "Bravo! 🥳";
         winText.textContent  = "Ai terminat nivelul " + (currentLevel + 1) + "! Hai la următorul!";
         playAgain.textContent = "Nivelul următor";
@@ -387,7 +641,6 @@
           loadLevel(currentLevel + 1);
         };
       } else {
-        // ultimul nivel -> rejucare
         winTitle.textContent = "Fantastic! ⭐";
         winText.textContent  = "Ai terminat toate nivelurile!";
         playAgain.textContent = "Joacă din nou";
@@ -401,6 +654,20 @@
 
     function hideWin() {
       winOverlay.classList.remove("show");
+    }
+
+    function isObstacleCell(r, c) {
+      return obstacles.some(o => o.r === r && o.c === c);
+    }
+
+    function isFireCell(r, c) {
+      return fires.some(f => f.r === r && f.c === c);
+    }
+
+    function isBlockedCell(r, c) {
+      if (isObstacleCell(r, c)) return true;
+      if (!fireExtinguished && isFireCell(r, c)) return true;
+      return false;
     }
 
     function tryMove(dir) {
@@ -421,24 +688,73 @@
         return;
       }
 
+      if (isBlockedCell(nr, nc)) {
+        boardWrap.classList.remove("shake");
+        void boardWrap.offsetWidth;
+        boardWrap.classList.add("shake");
+        return;
+      }
+
       bunnyPos.r = nr;
       bunnyPos.c = nc;
       updateBunny();
 
-      if (nr === flagPos.r && nc === flagPos.c) {
+      if (nr === goalPos.r && nc === goalPos.c) {
+        const lvl = levels[currentLevel];
+        if (lvl.goalType === "banana") {
+          winTitle.textContent = "Yummy! 🍌";
+          winText.textContent  = "Maimuțica a prins banana!";
+        }
         showWin();
       }
     }
 
-    // CLICK + TOUCH pentru butoane (merge și pe tabletă)
+    // 🧯 apă – pentru elefant (nivelul 4)
+    function useWater() {
+      const lvl = levels[currentLevel];
+      if (!lvl.usesWater || waterBtn.disabled) {
+        boardWrap.classList.remove("shake");
+        void boardWrap.offsetWidth;
+        boardWrap.classList.add("shake");
+        return;
+      }
+
+      if (!waterPos || bunnyPos.r !== waterPos.r || bunnyPos.c !== waterPos.c) {
+        boardWrap.classList.remove("shake");
+        void boardWrap.offsetWidth;
+        boardWrap.classList.add("shake");
+        return;
+      }
+
+      if (fireExtinguished) return;
+
+      fireExtinguished = true;
+
+      fires.forEach(f => {
+        const idx = f.r * COLS + f.c;
+        const cell = grid.children[idx];
+        if (cell) {
+          cell.classList.remove("fire");
+        }
+      });
+    }
+
+    // CLICK + TOUCH pentru săgeți
     document.querySelectorAll(".btn-arrow[data-dir]").forEach(btn => {
       btn.addEventListener("click", () => tryMove(btn.dataset.dir));
 
       btn.addEventListener("touchstart", (e) => {
-        e.preventDefault();      // oprește delay/ghost click
+        e.preventDefault();
         tryMove(btn.dataset.dir);
       }, { passive: false });
     });
+
+    // CLICK + TOUCH pentru apă
+    waterBtn.addEventListener("click", () => useWater());
+    waterBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      useWater();
+    }, { passive: false });
 
     // taste săgeți
     window.addEventListener("keydown", e => {
@@ -452,6 +768,15 @@
         e.preventDefault();
         tryMove(map[e.key]);
       }
+    });
+
+    // butoane din meniul lateral
+    levelButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const idx = parseInt(btn.dataset.level, 10);
+        hideWin();
+        loadLevel(idx);
+      });
     });
 
     // la resize refacem dimensiunea celulei (și pozițiile)
