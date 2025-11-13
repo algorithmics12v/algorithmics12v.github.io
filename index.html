@@ -21,7 +21,7 @@
       justify-content: center;
     }
 
-    /* TOT JOCUL – centrat, cu un mic offset în jos */
+    /* TOT JOCUL – cu margini moderate */
     .game {
       width: 100%;
       height: 100vh;
@@ -29,9 +29,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 16px;
-      padding: 8px;
-      transform: translateY(3vh); /* coboară tot conținutul un pic */
+      gap: 14px;
+      padding: 40px 28px;
     }
 
     .board-wrapper {
@@ -43,96 +42,102 @@
 
     .board-title {
       font-weight: bold;
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       color: white;
       text-shadow: 0 0 8px black;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      text-align: center;
     }
 
-    /* GRID */
+    /* GRID – dimensiune controlată prin variabile CSS */
     .grid {
+      --cell-size: 80px;
+      --rows: 4;
+      --cols: 5;
       display: grid;
-      grid-template-columns: repeat(5, 76px);
-      grid-template-rows: repeat(4, 76px);
+      grid-template-columns: repeat(var(--cols), var(--cell-size));
+      grid-template-rows: repeat(var(--rows), var(--cell-size));
       gap: 8px;
       justify-content: center;
       align-content: center;
     }
 
     .cell {
-      border-radius: 14px;
+      border-radius: 16px;
       background: rgba(255, 255, 255, 0.7);
-      border: 2px solid white;
+      border: 3px solid white;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 0 10px rgba(255,255,255,0.5);
     }
 
     .cell.flag {
-      background: rgba(255, 200, 200, 0.85);
+      background: rgba(255, 200, 200, 0.9);
     }
 
     .cell.flag::after {
       content: "🚩";
-      font-size: 1.8rem;
+      font-size: calc(var(--cell-size) * 0.45);
     }
 
-    /* IEPURAȘ – clar și centrat în pătrat */
+    /* PERSONAJ – iepuraș / ursuleț, centrat în celulă */
     .bunny {
-      width: 60px;
-      height: 60px;
+      width: calc(var(--cell-size) * 0.8);
+      height: calc(var(--cell-size) * 0.8);
       border-radius: 50%;
       background: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 2px solid #ff8fa3;
-      font-size: 2.1rem;
-      place-self: center;              /* 👉 centrează iepurașul în celula lui */
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+      border: 3px solid #ff8fa3;
+      font-size: calc(var(--cell-size) * 0.45);
+      place-self: center;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
     }
 
-    /* BUTOANE SUB GRID, PE O SINGURĂ LINIE */
+    /* CONTROALE */
     .controls {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       text-align: center;
       color: white;
       text-shadow: 0 0 8px black;
+      margin-top: 6px;
     }
 
     .controls h2 {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
     }
 
     .controls p {
       font-size: 0.9rem;
     }
 
+    /* BUTOANE ÎNTR-O LINIE, COLORATE */
     .buttons {
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 10px;
       margin-top: 4px;
-      flex-wrap: nowrap; /* toate în linie */
+      flex-wrap: nowrap;
     }
 
     .btn-arrow {
-      width: 64px;
-      height: 40px;
+      width: 72px;
+      height: 42px;
       border: none;
       border-radius: 999px;
       font-size: 1.4rem;
       cursor: pointer;
-      transition: transform 0.1s, box-shadow 0.15s, background 0.15s;
+      transition: transform 0.1s, box-shadow 0.15s, filter 0.15s;
       box-shadow: 0 3px 6px rgba(0,0,0,0.3);
       color: #f9fafb;
     }
 
-    /* culori diferite pe săgeți */
     .btn-arrow[data-dir="up"] {
       background: linear-gradient(135deg, #38bdf8, #1d4ed8);
     }
@@ -149,6 +154,7 @@
     .btn-arrow:active {
       transform: scale(0.9);
       box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+      filter: brightness(0.95);
     }
 
     /* OVERLAY CÂȘTIG */
@@ -175,6 +181,7 @@
       border-radius: 18px;
       text-align: center;
       box-shadow: 0 0 20px black;
+      max-width: 260px;
     }
 
     .win-box h3 {
@@ -182,8 +189,12 @@
       margin-bottom: 6px;
     }
 
+    .win-box p {
+      margin-bottom: 8px;
+    }
+
     .win-box button {
-      margin-top: 8px;
+      margin-top: 4px;
       border: none;
       padding: 8px 18px;
       border-radius: 999px;
@@ -202,45 +213,14 @@
       100% { transform: translateX(0); }
     }
 
-    /* 📏 ADAPTARE PENTRU ECRANE MAI JOASE */
-
-    @media (max-height: 750px) {
-      .grid {
-        grid-template-columns: repeat(5, 68px);
-        grid-template-rows: repeat(4, 68px);
-        gap: 6px;
+    /* Pe ecrane foarte joase reducem padding-ul ca să încape tot */
+    @media (max-height: 700px) {
+      .game {
+        padding: 20px 16px;
+        gap: 8px;
       }
-      .bunny {
-        width: 54px;
-        height: 54px;
-        font-size: 1.9rem;
-      }
-      .btn-arrow {
-        width: 60px;
-        height: 36px;
-        font-size: 1.25rem;
-      }
-    }
-
-    @media (max-height: 650px) {
-      .game { transform: translateY(0); } /* pe ecrane mici, îl recentrăm */
-      .grid {
-        grid-template-columns: repeat(5, 60px);
-        grid-template-rows: repeat(4, 60px);
-        gap: 4px;
-      }
-      .bunny {
-        width: 48px;
-        height: 48px;
-        font-size: 1.7rem;
-      }
-      .btn-arrow {
-        width: 52px;
-        height: 32px;
-        font-size: 1.1rem;
-      }
-      .controls h2 { font-size: 1.05rem; }
-      .controls p { font-size: 0.8rem; }
+      .controls h2 { font-size: 1.15rem; }
+      .controls p  { font-size: 0.8rem; }
     }
   </style>
 </head>
@@ -248,33 +228,25 @@
 
   <div class="game">
     <div class="board-wrapper" id="boardWrapper">
-      <div class="board-title">🐰 Iepurașul Vesel</div>
+      <div class="board-title" id="boardTitle">🐰 Iepurașul Vesel</div>
 
       <div class="win-overlay" id="winOverlay">
         <div class="win-box">
-          <h3>Bravo! 🥳</h3>
-          <p>Iepurașul a ajuns la steag!</p>
+          <h3 id="winTitle">Bravo! 🥳</h3>
+          <p id="winText">Ai terminat nivelul!</p>
           <button id="playAgainBtn">Joacă din nou</button>
         </div>
       </div>
 
       <div class="grid" id="grid">
-        <!-- 20 celule -->
-        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell flag"></div><div class="cell"></div>
-        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-
-        <!-- IEPURAȘ -->
-        <div class="bunny" id="bunny">🐰</div>
+        <!-- celulele & personajul vor fi generate din JavaScript -->
       </div>
     </div>
 
     <div class="controls">
-      <h2>Mișcă-l pe iepuraș</h2>
+      <h2>Mișcă personajul</h2>
       <p>Folosește săgețile sau tastele pentru a ajunge la steag.</p>
 
-      <!-- BUTOANE ÎNTR-O SINGURĂ LINIE -->
       <div class="buttons">
         <button class="btn-arrow" data-dir="left">←</button>
         <button class="btn-arrow" data-dir="up">↑</button>
@@ -285,43 +257,159 @@
   </div>
 
   <script>
-    const ROWS = 4, COLS = 5;
-    const startPos = { r: 3, c: 0 };
-    const flagPos  = { r: 1, c: 3 };
+    // 🔹 Configurări de nivel
+    const levels = [
+      {
+        name: "🐰 Iepurașul Vesel – Nivelul 1",
+        rows: 4,
+        cols: 5,
+        start: { r: 3, c: 0 },
+        flag:  { r: 1, c: 3 },
+        emoji: "🐰"
+      },
+      {
+        name: "🐻 Ursulețul Curajos – Nivelul 2",
+        rows: 5,
+        cols: 6,
+        start: { r: 4, c: 0 },
+        flag:  { r: 0, c: 5 },
+        emoji: "🐻"
+      }
+    ];
 
-    let bunnyPos = { ...startPos };
+    let currentLevel = 0;
+    let ROWS, COLS, flagPos, bunnyPos;
 
-    const bunnyEl    = document.getElementById("bunny");
+    const grid       = document.getElementById("grid");
     const boardWrap  = document.getElementById("boardWrapper");
+    const boardTitle = document.getElementById("boardTitle");
     const winOverlay = document.getElementById("winOverlay");
+    const winTitle   = document.getElementById("winTitle");
+    const winText    = document.getElementById("winText");
     const playAgain  = document.getElementById("playAgainBtn");
 
-    // Fixăm celulele ca să nu se miște steagul
-    (function fixCells() {
-      document.querySelectorAll(".grid .cell").forEach((cell, i) => {
+    // personajul (iepuraș / ursuleț)
+    const bunnyEl = document.createElement("div");
+    bunnyEl.id = "bunny";
+    bunnyEl.className = "bunny";
+
+    // 🔧 Fixăm poziția fiecărei celule, ca să nu se mai „mute” vizual steagul
+    function fixCells() {
+      const cells = grid.querySelectorAll(".cell");
+      cells.forEach((cell, i) => {
         const r = Math.floor(i / COLS);
         const c = i % COLS;
-        cell.style.gridRowStart = r + 1;
+        cell.style.gridRowStart    = r + 1;
         cell.style.gridColumnStart = c + 1;
       });
-    })();
+    }
+
+    // 🔍 Calculăm dimensiunea optimă a celulei ca să nu facă overflow
+    function updateCellSize() {
+      // spațiu aproximativ ocupat de titlu + controale
+      const extraVertical = 170; // px (titlu + butoane + text)
+      const paddingY = window.innerHeight <= 700 ? 40 : 80; // estimează padding sus+j0s
+      const availableHeight = window.innerHeight - extraVertical - paddingY;
+
+      const extraHorizontal = 60; // px pentru margini laterale
+      const availableWidth = window.innerWidth - extraHorizontal;
+
+      const maxSizeH = availableHeight / ROWS;
+      const maxSizeW = availableWidth / COLS;
+
+      // limităm celula între 40 și 120 px
+      const cellSize = Math.max(40, Math.min(maxSizeH, maxSizeW, 120));
+
+      grid.style.setProperty("--cell-size", cellSize + "px");
+    }
+
+    function loadLevel(index) {
+      const lvl = levels[index];
+      currentLevel = index;
+
+      ROWS = lvl.rows;
+      COLS = lvl.cols;
+      flagPos = { ...lvl.flag };
+      bunnyPos = { ...lvl.start };
+
+      // titlu
+      boardTitle.textContent = lvl.name;
+
+      // setăm numărul de rânduri/coloane în CSS
+      grid.style.setProperty("--rows", ROWS);
+      grid.style.setProperty("--cols", COLS);
+
+      // calculăm dimensiunea celulelor pentru acest nivel
+      updateCellSize();
+
+      // curățăm grila
+      grid.innerHTML = "";
+
+      // generăm celulele
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          if (r === flagPos.r && c === flagPos.c) {
+            cell.classList.add("flag");
+          }
+          grid.appendChild(cell);
+        }
+      }
+
+      // 🧱 blocăm pozițiile celulelor (inclusiv steagul)
+      fixCells();
+
+      // actualizăm personajul (emoji) și îl punem în grid
+      bunnyEl.textContent = lvl.emoji;
+      grid.appendChild(bunnyEl);
+      updateBunny();
+
+      hideWin();
+    }
 
     function updateBunny() {
       bunnyEl.style.gridRowStart    = bunnyPos.r + 1;
       bunnyEl.style.gridColumnStart = bunnyPos.c + 1;
     }
 
-    function showWin() { winOverlay.classList.add("show"); }
-    function hideWin() { winOverlay.classList.remove("show"); }
+    function showWin() {
+      winOverlay.classList.add("show");
 
-    function resetGame() {
-      bunnyPos = { ...startPos };
-      updateBunny();
-      hideWin();
+      if (currentLevel < levels.length - 1) {
+        // nu e ultimul nivel -> pregătim "Nivelul următor"
+        winTitle.textContent = "Bravo! 🥳";
+        winText.textContent  = "Ai terminat nivelul " + (currentLevel + 1) + "! Hai la următorul!";
+        playAgain.textContent = "Nivelul următor";
+
+        playAgain.onclick = () => {
+          hideWin();
+          loadLevel(currentLevel + 1);
+        };
+      } else {
+        // ultimul nivel -> rejucare
+        winTitle.textContent = "Fantastic! ⭐";
+        winText.textContent  = "Ai terminat toate nivelurile!";
+        playAgain.textContent = "Joacă din nou";
+
+        playAgain.onclick = () => {
+          hideWin();
+          loadLevel(0);
+        };
+      }
+    }
+
+    function hideWin() {
+      winOverlay.classList.remove("show");
     }
 
     function tryMove(dir) {
-      const D = { up:{dr:-1,dc:0}, down:{dr:1,dc:0}, left:{dr:0,dc:-1}, right:{dr:0,dc:1} }[dir];
+      const D = {
+        up:    { dr: -1, dc: 0 },
+        down:  { dr:  1, dc: 0 },
+        left:  { dr:  0, dc:-1 },
+        right: { dr:  0, dc: 1 }
+      }[dir];
 
       const nr = bunnyPos.r + D.dr;
       const nc = bunnyPos.c + D.dc;
@@ -337,21 +425,44 @@
       bunnyPos.c = nc;
       updateBunny();
 
-      if (nr === flagPos.r && nc === flagPos.c) showWin();
+      if (nr === flagPos.r && nc === flagPos.c) {
+        showWin();
+      }
     }
 
-    document.querySelectorAll(".btn-arrow[data-dir]").forEach(btn =>
-      btn.addEventListener("click", () => tryMove(btn.dataset.dir))
-    );
+    // CLICK + TOUCH pentru butoane (merge și pe tabletă)
+    document.querySelectorAll(".btn-arrow[data-dir]").forEach(btn => {
+      btn.addEventListener("click", () => tryMove(btn.dataset.dir));
 
-    window.addEventListener("keydown", e => {
-      const map = {ArrowUp:"up", ArrowDown:"down", ArrowLeft:"left", ArrowRight:"right"};
-      if (map[e.key]) { e.preventDefault(); tryMove(map[e.key]); }
+      btn.addEventListener("touchstart", (e) => {
+        e.preventDefault();      // oprește delay/ghost click
+        tryMove(btn.dataset.dir);
+      }, { passive: false });
     });
 
-    playAgain.addEventListener("click", resetGame);
+    // taste săgeți
+    window.addEventListener("keydown", e => {
+      const map = {
+        ArrowUp: "up",
+        ArrowDown: "down",
+        ArrowLeft: "left",
+        ArrowRight: "right"
+      };
+      if (map[e.key]) {
+        e.preventDefault();
+        tryMove(map[e.key]);
+      }
+    });
 
-    updateBunny();
+    // la resize refacem dimensiunea celulei (și pozițiile)
+    window.addEventListener("resize", () => {
+      updateCellSize();
+      fixCells();
+      updateBunny();
+    });
+
+    // pornim cu nivelul 1 (iepuraș)
+    loadLevel(0);
   </script>
 </body>
 </html>
